@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic Tree View Example</title>
+
+    <!-- style imports -->
+    <link href="../../src/styles/cz-tree.css" rel="stylesheet">
+
+    <!-- js imports -->
+    <script src="../../node_modules/angular/angular.min.js"></script>
+    <script src="../../build/corazon-treeview.js"></script>
+
+    <script src="../scripts/app.js"></script>
+    <script src="../scripts/basicCtrl.js"></script>
+
+    <style>
+        .container {
+            width: 240px;
+            height: 300px;
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+<body ng-app="demo">
+    <div ng-controller="BasicCtrl">
+
+        <!-- tree node template -->
+        <script type="text/ng-template" id="nodeTemplate.html">
+
+            <!-- node header -->
+            <div ng-class="{'selected' : isSelected()}">
+                <div cz-tree-node-header>
+                    <span ng-click="toggleCollapse()">[C]</span>
+                    <span>{{::node.name}}</span>
+                </div>
+            </div>
+
+            <!-- sub nodes -->
+            <div cz-tree-nodes ng-class="{'hidden': collapsed}">
+                <div ng-repeat="node in node.nodes" cz-tree-node="" ng-include="'nodeTemplate.html'"></div>
+            </div>
+
+        </script>
+
+        <div class="container">
+            <!-- tree root node -->
+            <div cz-tree>
+                <div ng-repeat="node in data" cz-tree-node="" ng-include="'nodeTemplate.html'"></div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
