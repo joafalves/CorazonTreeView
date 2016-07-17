@@ -4,7 +4,8 @@ angular.module('cz-tree')
 		return {
 			require: '^czTreeNode',
 			restrict: 'A',
-			scope: false,
+			scope: true,
+			replace: false,
 			link: function(scope, element, attributes, treeNode) {
 				// add the cz-tree-nodes class to the element:
 				element.addClass('cz-tree-header');
@@ -22,10 +23,11 @@ angular.module('cz-tree')
 				element.attr('onclick', '{{onClick(e)}}');
 
 				// event handlers:
+				var nodeScope = treeNode ? treeNode.scope : scope;
 
 				element[0].onclick = function(e) {
 					// based on the shift key state we are going to keep the previous selection or not
-					scope.select(e.shiftKey);
+					nodeScope.select(e.shiftKey);
 					scope.$apply();
 				};
 

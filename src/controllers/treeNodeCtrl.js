@@ -12,6 +12,7 @@ angular.module('cz-tree')
 		$scope.$treeScope = null;
 
 		$scope.collapsed = false;
+		$scope.attachment = null;
 
 		/* scope functions */
 
@@ -33,7 +34,7 @@ angular.module('cz-tree')
 		};
 
 		$scope.select = function(keepPrevious) {
-			$scope.$treeScope.selectNode($scope.$id, keepPrevious);
+			$scope.$treeScope.selectNode($scope.$id, $scope.attachment, keepPrevious);
 		};
 
 		$scope.isSelected = function() {
