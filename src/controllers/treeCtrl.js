@@ -13,11 +13,29 @@ angular.module('cz-tree')
 
             /* scope functions */
 
+            $scope.$on(CZC.EVENTS.SELECT_NODES_BY_UID, (function (e, targets, keepPrevious) {
+                if(targets && targets.length > 0) {
+                    for (var i = 0; i < targets.length; i++) {
+                        $scope.selectNode(targets[i], null, i == 0 ? keepPrevious : true, true);
+                    }
+                } else {
+                    // clear all existing selection:
+                    $scope.clearNodeSelection();
+                }
+
+            }).bind(this));
+
+            $scope.safeDigest = function() {
+                if (!$scope.$$phase) {
+                    $scope.$digest();
+                }
+            };
+
             $scope.initialize = function () {
 
             };
 
-            $scope.selectNode = function (id, attachment, keepPrevious) {
+            $scope.selectNode = function (id, attachment, keepPrevious, preventPublishing) {
                 if ($scope.$multiSelectEnabled && keepPrevious) {
                     if (!$scope.isNodeSelected(id)) {
                         $scope.$selectedNodes.push({id: id, attachment: attachment});
@@ -26,7 +44,9 @@ angular.module('cz-tree')
                     $scope.$selectedNodes = [{id: id, attachment: attachment}];
                 }
 
-                $scope.onSelectionChange({selected: $scope.$selectedNodes});
+                if (!preventPublishing) {
+                    $scope.onSelectionChange({selected: $scope.$selectedNodes});
+                }
             };
 
             $scope.unselectNode = function (node) {

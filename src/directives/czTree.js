@@ -5,7 +5,8 @@ angular.module('cz-tree')
                 restrict: 'AE',
                 controller: 'TreeCtrl',
                 scope: {
-                    onSelectionChange: '&'
+                    onSelectionChange: '&',
+                    onDoubleClick: '&'
                 },
                 link: function (scope, element, attributes) {
                     // add the cz-tree class to the element:

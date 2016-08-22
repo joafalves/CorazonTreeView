@@ -25,6 +25,13 @@ angular.module('cz-tree')
 				// event handlers:
 				var nodeScope = treeNode ? treeNode.scope : scope;
 
+				element[0].ondblclick = function(e) {
+					// based on the shift key state we are going to keep the previous selection or not
+					nodeScope.select(e.shiftKey);
+					nodeScope.doubleClick();
+					scope.$apply();
+				};
+
 				element[0].onclick = function(e) {
 					// based on the shift key state we are going to keep the previous selection or not
 					nodeScope.select(e.shiftKey);

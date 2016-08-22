@@ -18,6 +18,7 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				src: [
+					'src/constants.js',
 					'src/main.js',
 					'src/**/*.js'
 				],

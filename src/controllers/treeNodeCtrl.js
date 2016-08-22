@@ -13,6 +13,7 @@ angular.module('cz-tree')
 
 		$scope.collapsed = false;
 		$scope.attachment = null;
+		$scope.id = null;
 
 		/* scope functions */
 
@@ -30,15 +31,19 @@ angular.module('cz-tree')
 		};
 
 		$scope.unselect = function() {
-			$scope.$treeScope.unselectNode($scope.$id);
+			$scope.$treeScope.unselectNode($scope.id || $scope.$id);
+		};
+
+		$scope.doubleClick = function() {
+			$scope.$treeScope.onDoubleClick({selected: $scope.$treeScope.$selectedNodes});
 		};
 
 		$scope.select = function(keepPrevious) {
-			$scope.$treeScope.selectNode($scope.$id, $scope.attachment, keepPrevious);
+			$scope.$treeScope.selectNode($scope.id || $scope.$id, $scope.attachment, keepPrevious);
 		};
 
 		$scope.isSelected = function() {
-			return $scope.$treeScope.isNodeSelected($scope.$id);
+			return $scope.$treeScope.isNodeSelected($scope.id || $scope.$id);
 		};
 
 		/* initialize */

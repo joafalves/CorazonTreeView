@@ -1,4 +1,9 @@
-// cz-tree angular definition:
+var CZC_PREFIX = "czc.";
+var CZC = {
+    EVENTS: {
+        SELECT_NODES_BY_UID: CZC_PREFIX + "selectNodesByUID"
+    }
+};;// cz-tree angular definition:
 angular.module("cz-tree", [])
 
 .constant("settings", {
@@ -20,11 +25,29 @@ angular.module("cz-tree", [])
 
             /* scope functions */
 
+            $scope.$on(CZC.EVENTS.SELECT_NODES_BY_UID, (function (e, targets, keepPrevious) {
+                if(targets && targets.length > 0) {
+                    for (var i = 0; i < targets.length; i++) {
+                        $scope.selectNode(targets[i], null, i == 0 ? keepPrevious : true, true);
+                    }
+                } else {
+                    // clear all existing selection:
+                    $scope.clearNodeSelection();
+                }
+
+            }).bind(this));
+
+            $scope.safeDigest = function() {
+                if (!$scope.$$phase) {
+                    $scope.$digest();
+                }
+            };
+
             $scope.initialize = function () {
 
             };
 
-            $scope.selectNode = function (id, attachment, keepPrevious) {
+            $scope.selectNode = function (id, attachment, keepPrevious, preventPublishing) {
                 if ($scope.$multiSelectEnabled && keepPrevious) {
                     if (!$scope.isNodeSelected(id)) {
                         $scope.$selectedNodes.push({id: id, attachment: attachment});
@@ -33,7 +56,9 @@ angular.module("cz-tree", [])
                     $scope.$selectedNodes = [{id: id, attachment: attachment}];
                 }
 
-                $scope.onSelectionChange({selected: $scope.$selectedNodes});
+                if (!preventPublishing) {
+                    $scope.onSelectionChange({selected: $scope.$selectedNodes});
+                }
             };
 
             $scope.unselectNode = function (node) {
@@ -77,6 +102,7 @@ angular.module("cz-tree", [])
 
 		$scope.collapsed = false;
 		$scope.attachment = null;
+		$scope.id = null;
 
 		/* scope functions */
 
@@ -94,15 +120,19 @@ angular.module("cz-tree", [])
 		};
 
 		$scope.unselect = function() {
-			$scope.$treeScope.unselectNode($scope.$id);
+			$scope.$treeScope.unselectNode($scope.id || $scope.$id);
+		};
+
+		$scope.doubleClick = function() {
+			$scope.$treeScope.onDoubleClick({selected: $scope.$treeScope.$selectedNodes});
 		};
 
 		$scope.select = function(keepPrevious) {
-			$scope.$treeScope.selectNode($scope.$id, $scope.attachment, keepPrevious);
+			$scope.$treeScope.selectNode($scope.id || $scope.$id, $scope.attachment, keepPrevious);
 		};
 
 		$scope.isSelected = function() {
-			return $scope.$treeScope.isNodeSelected($scope.$id);
+			return $scope.$treeScope.isNodeSelected($scope.id || $scope.$id);
 		};
 
 		/* initialize */
@@ -119,7 +149,8 @@ angular.module("cz-tree", [])
                 restrict: 'AE',
                 controller: 'TreeCtrl',
                 scope: {
-                    onSelectionChange: '&'
+                    onSelectionChange: '&',
+                    onDoubleClick: '&'
                 },
                 link: function (scope, element, attributes) {
                     // add the cz-tree class to the element:
@@ -143,7 +174,8 @@ angular.module("cz-tree", [])
                     // initialize the controller:
                     scope.initialize(controllers[0], controllers[1]);
 
-                    // set the attachment (if any)
+                    // set the attachments (if any)
+                    scope.id = attributes["uid"];
                     scope.attachment = attributes["attachment"];
 
                     // add the cz-tree-node class to the element:
@@ -177,6 +209,13 @@ angular.module("cz-tree", [])
 
 				// event handlers:
 				var nodeScope = treeNode ? treeNode.scope : scope;
+
+				element[0].ondblclick = function(e) {
+					// based on the shift key state we are going to keep the previous selection or not
+					nodeScope.select(e.shiftKey);
+					nodeScope.doubleClick();
+					scope.$apply();
+				};
 
 				element[0].onclick = function(e) {
 					// based on the shift key state we are going to keep the previous selection or not

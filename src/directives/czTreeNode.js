@@ -11,7 +11,8 @@ angular.module('cz-tree')
                     // initialize the controller:
                     scope.initialize(controllers[0], controllers[1]);
 
-                    // set the attachment (if any)
+                    // set the attachments (if any)
+                    scope.id = attributes["uid"];
                     scope.attachment = attributes["attachment"];
 
                     // add the cz-tree-node class to the element:
