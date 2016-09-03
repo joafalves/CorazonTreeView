@@ -36,6 +36,9 @@ angular.module('cz-tree')
 					// based on the shift key state we are going to keep the previous selection or not
 					nodeScope.select(e.shiftKey);
 					scope.$apply();
+
+					// stop the event propagation.
+					e.stopPropagation();
 				};
 
 				element[0].ondragstart = function(e) {
