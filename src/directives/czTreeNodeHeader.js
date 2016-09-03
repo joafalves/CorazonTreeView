@@ -20,7 +20,7 @@ angular.module('cz-tree')
 				// set the attributes for dragging:
 				element.attr('draggable', 'true');
 				element.attr('dragstart', '{{onDragStart(e)}}');
-				element.attr('onclick', '{{onClick(e)}}');
+				element.attr('onmouseup', '{{onClick(e)}}');
 
 				// event handlers:
 				var nodeScope = treeNode ? treeNode.scope : scope;
@@ -32,9 +32,15 @@ angular.module('cz-tree')
 					scope.$apply();
 				};
 
-				element[0].onclick = function(e) {
+				element[0].onmouseup = function(e) {
+					// if the mouse clicked button isn't left or right, there's no need to go further
+					if (e.which != 1 && e.which != 3) {
+						return;
+					}
+
 					// based on the shift key state we are going to keep the previous selection or not
 					nodeScope.select(e.ctrlKey);
+
 					scope.$apply();
 
 					// stop the event propagation.
