@@ -37,7 +37,7 @@
 
             <!-- sub nodes -->
             <div cz-tree-nodes ng-class="{'hidden': collapsed}">
-                <div ng-repeat="node in node.nodes" cz-tree-node="23" ng-include="'nodeTemplate.html'"></div>
+                <div uid="{{$id}}" ng-repeat="node in node.nodes" cz-tree-node="23" ng-include="'nodeTemplate.html'"></div>
             </div>
 
         </script>
@@ -45,7 +45,7 @@
         <div class="container">
             <!-- tree root node -->
             <cz-tree on-selected="onSelected(attachment)">
-                <div ng-repeat="node in data" cz-tree-node="" ng-include="'nodeTemplate.html'"></div>
+                <div uid="1" ng-repeat="node in data" cz-tree-node="" ng-include="'nodeTemplate.html'"></div>
             </cz-tree>
         </div>
 
